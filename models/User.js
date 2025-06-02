@@ -10,7 +10,7 @@ const UserSchema = new Schema(
       type: String,
       required: [true, "Username is required!"],
     },
-    images: {
+    image: {
       type: String,
     },
     bookmarks: [{ type: Schema.Types.ObjectId, ref: "Property" }],
