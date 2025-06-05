@@ -1,6 +1,38 @@
+"use client";
+import { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+
 const Message = ({ message }) => {
+  const [isRead, setIsRead] = useState(message.read);
+
+  const handleReadClick = async () => {
+    try {
+      const res = await fetch(`/api/messages/${message._id}`, {
+        method: "PUT",
+      });
+
+      if (res.status === 200) {
+        const { read } = await res.json();
+        console.log(read);
+        setIsRead(read);
+        if (read) {
+          toast.success("Message marked as read");
+        } else {
+          toast.success("Message marked as unread");
+        }
+      }
+    } catch (error) {
+      console.error("Error marking message as read:", error);
+    }
+  };
+
   return (
     <div className="relative bg-white p-4 rounded-md shadow-md border border-gray-200">
+      {!isRead && (
+        <div className="absolute top-2 right-2 bg-yellow-500 text-white px-2 py-1 rounded-md">
+          New
+        </div>
+      )}
       <h2 className="text-xl mb-4">
         {" "}
         <span className="font-bold">Property Inquiry: </span>
@@ -31,8 +63,13 @@ const Message = ({ message }) => {
           {new Date(message.createdAt).toLocaleString()}
         </li>
       </ul>
-      <button className="mt-4 mr-3 bg-blue-500 text-white py-1 px-3 rounded-md">
-        Mark As Read
+      <button
+        onClick={handleReadClick}
+        className={`mt-4 mr-3 py-1 px-3 rounded-md ${
+          isRead ? "bg-gray-300" : "bg-blue-500 text-white"
+        }`}
+      >
+        {isRead ? "Mark As New" : "Mark As Read"}
       </button>
       <button className="mt-4 bg-red-500 text-white py-1 px-3 rounded-md">
         Delete
