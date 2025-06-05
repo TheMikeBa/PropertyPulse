@@ -11,7 +11,7 @@ import Spinner from "@/components/Spinner";
 import PropertyImages from "@/components/PropertyImages";
 import BookmarkButton from "@/components/BookmarkButton";
 import ShareButtons from "@/components/ShareButtons";
-import PropertyContactFrom from "@/components/PropertyContactFrom";
+import PropertyContactFrom from "@/components/PropertyContactForm";
 
 const PropertyPage = () => {
   const { id } = useParams();
