@@ -3,33 +3,33 @@ import PropertyCard from "./PropertyCard";
 import Link from "next/link";
 
 const HomeProperties = async () => {
-  // const data = await fetchProperties();
-  // const recentProperties = data.properties
-  //   .sort(() => Math.random() - Math.random())
-  //   .slice(0, 3);
+  const data = await fetchProperties();
+  const recentProperties = data.properties
+    .sort(() => Math.random() - Math.random())
+    .slice(0, 3);
 
-  // Suggested by Gemini2.5 after Vercel deployment failures
-  let recentProperties = [];
-  try {
-    // fetchProperties (for non-featured) should now reliably return an object
-    // like { properties: [...], total: X } or { properties: [], total: 0 } in case of issues.
-    const data = await fetchProperties();
-    if (data && Array.isArray(data.properties)) {
-      recentProperties = data.properties
-        .sort(() => Math.random() - Math.random())
-        .slice(0, 3);
-    } else {
-      // This case should ideally not be hit if fetchProperties is robust
-      console.warn(
-        "HomeProperties: data.properties was not an array. Data received:",
-        data
-      );
-    }
-  } catch (error) {
-    // This catch is a fallback for unexpected errors in HomeProperties itself
-    console.error("Error in HomeProperties component rendering:", error);
-    // recentProperties remains []
-  }
+  // // Suggested by Gemini2.5 after Vercel deployment failures
+  // let recentProperties = [];
+  // try {
+  //   // fetchProperties (for non-featured) should now reliably return an object
+  //   // like { properties: [...], total: X } or { properties: [], total: 0 } in case of issues.
+  //   const data = await fetchProperties();
+  //   if (data && Array.isArray(data.properties)) {
+  //     recentProperties = data.properties
+  //       .sort(() => Math.random() - Math.random())
+  //       .slice(0, 3);
+  //   } else {
+  //     // This case should ideally not be hit if fetchProperties is robust
+  //     console.warn(
+  //       "HomeProperties: data.properties was not an array. Data received:",
+  //       data
+  //     );
+  //   }
+  // } catch (error) {
+  //   // This catch is a fallback for unexpected errors in HomeProperties itself
+  //   console.error("Error in HomeProperties component rendering:", error);
+  //   // recentProperties remains []
+  // }
 
   return (
     <>
