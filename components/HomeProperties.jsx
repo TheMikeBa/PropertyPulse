@@ -1,35 +1,16 @@
-import { fetchProperties } from "@/utils/request";
-import PropertyCard from "./PropertyCard";
 import Link from "next/link";
+import PropertyCard from "@/components/PropertyCard";
+import connectDB from "@/config/database";
+import Property from "@/models/Property";
 
 const HomeProperties = async () => {
-  const data = await fetchProperties();
-  const recentProperties = data.properties
-    .sort(() => Math.random() - Math.random())
-    .slice(0, 3);
+  await connectDB();
 
-  // // Suggested by Gemini2.5 after Vercel deployment failures
-  // let recentProperties = [];
-  // try {
-  //   // fetchProperties (for non-featured) should now reliably return an object
-  //   // like { properties: [...], total: X } or { properties: [], total: 0 } in case of issues.
-  //   const data = await fetchProperties();
-  //   if (data && Array.isArray(data.properties)) {
-  //     recentProperties = data.properties
-  //       .sort(() => Math.random() - Math.random())
-  //       .slice(0, 3);
-  //   } else {
-  //     // This case should ideally not be hit if fetchProperties is robust
-  //     console.warn(
-  //       "HomeProperties: data.properties was not an array. Data received:",
-  //       data
-  //     );
-  //   }
-  // } catch (error) {
-  //   // This catch is a fallback for unexpected errors in HomeProperties itself
-  //   console.error("Error in HomeProperties component rendering:", error);
-  //   // recentProperties remains []
-  // }
+  // Get the 3 latest properties
+  const recentProperties = await Property.find({})
+    .sort({ createdAt: -1 })
+    .limit(3)
+    .lean();
 
   return (
     <>
@@ -39,8 +20,7 @@ const HomeProperties = async () => {
             Recent Properties
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {recentProperties === 0 ? (
-              // {recentProperties.length === 0 ? (
+            {recentProperties.length === 0 ? (
               <p>No Properties Found</p>
             ) : (
               recentProperties.map((property) => (
@@ -50,6 +30,7 @@ const HomeProperties = async () => {
           </div>
         </div>
       </section>
+
       <section className="m-auto max-w-lg my-10 px-6">
         <Link
           href="/properties"
