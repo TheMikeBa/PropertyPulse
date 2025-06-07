@@ -5,9 +5,25 @@ import Link from "next/link";
 const HomeProperties = async () => {
   const data = await fetchProperties();
 
-  const recentProperties = data.properties
-    .sort(() => Math.random() - Math.random())
-    .slice(0, 3);
+  // const recentProperties = data.properties
+  //   .sort(() => Math.random() - Math.random())
+  //   .slice(0, 3);
+
+  let recentProperties = [];
+
+  if (data && data.properties && Array.isArray(data.properties)) {
+    recentProperties = data.properties
+      .sort(() => Math.random() - Math.random())
+      .slice(0, 3);
+  } else if (Array.isArray(data)) {
+    // This case handles if fetchProperties() itself returned an empty array directly
+    // due to an error or missing API_DOMAIN, and was meant to return {properties: []}
+    // For now, we'll assume an empty array means no properties to show.
+    // Or, if the API for non-featured properties was changed to return an array directly.
+    recentProperties = data
+      .sort(() => Math.random() - Math.random())
+      .slice(0, 3);
+  }
 
   return (
     <>
