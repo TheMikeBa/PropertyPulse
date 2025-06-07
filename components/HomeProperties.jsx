@@ -3,26 +3,37 @@ import PropertyCard from "./PropertyCard";
 import Link from "next/link";
 
 const HomeProperties = async () => {
-  const data = await fetchProperties();
-
+  // const data = await fetchProperties();
   // const recentProperties = data.properties
   //   .sort(() => Math.random() - Math.random())
   //   .slice(0, 3);
 
-  let recentProperties = [];
+  // Suggested by Gemini2.5 after Vercel deployment failures
+  let recentProperties = []; // Initialize as empty array
 
-  if (data && data.properties && Array.isArray(data.properties)) {
-    recentProperties = data.properties
-      .sort(() => Math.random() - Math.random())
-      .slice(0, 3);
-  } else if (Array.isArray(data)) {
-    // This case handles if fetchProperties() itself returned an empty array directly
-    // due to an error or missing API_DOMAIN, and was meant to return {properties: []}
-    // For now, we'll assume an empty array means no properties to show.
-    // Or, if the API for non-featured properties was changed to return an array directly.
-    recentProperties = data
-      .sort(() => Math.random() - Math.random())
-      .slice(0, 3);
+  try {
+    const data = await fetchProperties(); // Call without showFeatured
+
+    // Check if data is an object and has a 'properties' array (expected structure)
+    if (
+      data &&
+      typeof data === "object" &&
+      data !== null &&
+      Array.isArray(data.properties)
+    ) {
+      recentProperties = data.properties
+        .sort(() => Math.random() - Math.random())
+        .slice(0, 3);
+    } else if (Array.isArray(data)) {
+      // Fallback: if fetchProperties directly returns an array (e.g., from catch or if apiDomain is null)
+      recentProperties = data
+        .sort(() => Math.random() - Math.random())
+        .slice(0, 3);
+    }
+    // If data is null, undefined, or an unexpected structure, recentProperties remains []
+  } catch (error) {
+    console.error("Error fetching or processing home properties:", error);
+    // recentProperties will remain an empty array, so the page can still render
   }
 
   return (
