@@ -9,31 +9,26 @@ const HomeProperties = async () => {
   //   .slice(0, 3);
 
   // Suggested by Gemini2.5 after Vercel deployment failures
-  let recentProperties = []; // Initialize as empty array
-
+  let recentProperties = [];
   try {
-    const data = await fetchProperties(); // Call without showFeatured
-
-    // Check if data is an object and has a 'properties' array (expected structure)
-    if (
-      data &&
-      typeof data === "object" &&
-      data !== null &&
-      Array.isArray(data.properties)
-    ) {
+    // fetchProperties (for non-featured) should now reliably return an object
+    // like { properties: [...], total: X } or { properties: [], total: 0 } in case of issues.
+    const data = await fetchProperties();
+    if (data && Array.isArray(data.properties)) {
       recentProperties = data.properties
         .sort(() => Math.random() - Math.random())
         .slice(0, 3);
-    } else if (Array.isArray(data)) {
-      // Fallback: if fetchProperties directly returns an array (e.g., from catch or if apiDomain is null)
-      recentProperties = data
-        .sort(() => Math.random() - Math.random())
-        .slice(0, 3);
+    } else {
+      // This case should ideally not be hit if fetchProperties is robust
+      console.warn(
+        "HomeProperties: data.properties was not an array. Data received:",
+        data
+      );
     }
-    // If data is null, undefined, or an unexpected structure, recentProperties remains []
   } catch (error) {
-    console.error("Error fetching or processing home properties:", error);
-    // recentProperties will remain an empty array, so the page can still render
+    // This catch is a fallback for unexpected errors in HomeProperties itself
+    console.error("Error in HomeProperties component rendering:", error);
+    // recentProperties remains []
   }
 
   return (
@@ -44,7 +39,8 @@ const HomeProperties = async () => {
             Recent Properties
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {recentProperties === 0 ? (
+            {/* {recentProperties === 0 ? ( */}
+            {recentProperties.length === 0 ? (
               <p>No Properties Found</p>
             ) : (
               recentProperties.map((property) => (
