@@ -8,8 +8,8 @@ const HomePage = () => {
     <>
       <Hero />
       <InfoBoxes />
-      <FeaturedProperties />
-      <HomeProperties />
+      {/* <FeaturedProperties /> */}
+      {/* <HomeProperties /> */}
     </>
   );
 };
